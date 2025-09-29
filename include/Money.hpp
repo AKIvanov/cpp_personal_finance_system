@@ -12,10 +12,15 @@ class Money {
     public: 
         // Explicit constructors to prevent implicit conversion
         explicit Money(int64_t cents) : _amount(cents) {};
-        explicit Money(double  dollars) { 
-            double rounded_dollars = std::round(dollars * DOLLARS_TO_CENTS);
-            _amount = static_cast<int64_t>(rounded_dollars);
-        };
+
+        // Static function that returns a Money object that is based on a double 
+        static Money from_double(double d) {
+            double rounded_dollars = std::round(d * DOLLARS_TO_CENTS);
+            
+            Money m( static_cast<int64_t>(rounded_dollars) );
+            
+            return m;
+        }
 
         // Static function so that you can use a string to create a Money object
         static Money from_string(std::string str) {
@@ -44,17 +49,21 @@ class Money {
             return Money( this->_amount - rhs.getAmount() );
         }
 
-        Money operator*(const Money& rhs) const {
-            return Money( this->_amount * rhs.getAmount() );
+        Money operator*(const double& rhs) {
+            double dVal = this->_amount * rhs;
+            int64_t iVal = this->convertDoubleToInt64_t(dVal);
+            return Money( iVal );
         }
 
-        Money operator/(const Money& rhs) const {
-            // Calls constructor that has explicit type double which gets rounded and converted to int64_t
-            return Money( static_cast<double>(this->_amount) / static_cast<double>(rhs.getAmount()) );
+        Money operator/(const double& rhs) {
+            double dVal = this->_amount / rhs; 
+            int64_t iVal = this->convertDoubleToInt64_t(dVal);
+            return Money( iVal );
         }
 
-        Money operator=(const Money& rhs) {
-            return Money( this->_amount = rhs.getAmount() );
+        Money& operator=(const Money& rhs) {
+            if (this != &rhs) _amount = rhs.getAmount();
+            return *this; 
         }
         
         // Overload logic operators
@@ -92,6 +101,13 @@ class Money {
     
         // Getter method for the amount of money
         int64_t getAmount() const {return _amount;}
+
+        // Helper function to convert a double to int64_t
+        int64_t convertDoubleToInt64_t(double d)
+        {
+            int64_t val = std::round(d * DOLLARS_TO_CENTS);
+            return val;
+        }
 
     protected:
     // Amount of money represented in cents
