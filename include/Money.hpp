@@ -11,8 +11,9 @@ class Money {
 
     public: 
         // Explicit constructors to prevent implicit conversion
-        explicit Money(int64_t cents) : _amount(cents) {};
-
+        template< typename T, typename = std::enable_if_t<std::is_integral_v<T>> >
+        explicit Money(T cents) : _amount(static_cast<int64_t>(cents)) {};
+        
         // Static function that returns a Money object that is based on a double 
         static Money from_double(double d) {
             double rounded_dollars = std::round(d * DOLLARS_TO_CENTS);
@@ -49,16 +50,27 @@ class Money {
             return Money( this->_amount - rhs.getAmount() );
         }
 
+        Money operator*(const int& rhs) {
+                    int iVal = this->_amount * rhs;
+                    return Money( iVal );
+                }
+
         Money operator*(const double& rhs) {
             double dVal = this->_amount * rhs;
             int64_t iVal = this->convertDoubleToInt64_t(dVal);
             return Money( iVal );
         }
+        
+        Money operator/(const int& rhs) {
+            double dVal = this->_amount / rhs; 
+            int iVal = std::round(dVal);
+            return Money( iVal );
+        }
 
         Money operator/(const double& rhs) {
-            double dVal = this->_amount / rhs; 
-            int64_t iVal = this->convertDoubleToInt64_t(dVal);
-            return Money( iVal );
+            int64_t iVal = this->convertDoubleToInt64_t(rhs);
+            int64_t iVal2 = this->_amount / iVal; 
+            return Money( iVal2 );
         }
 
         Money& operator=(const Money& rhs) {

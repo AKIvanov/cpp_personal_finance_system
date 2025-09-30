@@ -11,7 +11,6 @@ add_library(bank_lib
     src/CheckingAccount.cpp
     src/Ledger.cpp
     src/SavingsAccount.cpp
-    src/Transaction.cpp
 )
 
 # Add include directory
