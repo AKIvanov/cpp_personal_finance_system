@@ -10,11 +10,11 @@ class Transaction {
                  const std::string& description,
                  const Money& initial_amount, 
                  const Money& balance_after,
-                 bool credit_or_debit) : _timestamp(timestamp), 
+                 bool is_credit) : _timestamp(timestamp), 
                                         _description(description),
                                         _initial_amount(initial_amount), 
                                         _balance_after(balance_after), 
-                                        _credit_or_debit(credit_or_debit) {};
+                                        _is_credit(is_credit) {};
 
     std::chrono::time_point<std::chrono::system_clock> getTimeStamp() const {
         return _timestamp;
@@ -33,7 +33,7 @@ class Transaction {
     }
 
     bool getCreditOrDebit() const {
-        return _credit_or_debit;
+        return _is_credit;
     }
 
     private:
@@ -41,7 +41,7 @@ class Transaction {
     std::string _description; 
     Money _initial_amount;
     Money _balance_after;
-    bool _credit_or_debit; 
+    bool _is_credit; 
     
 
 }
